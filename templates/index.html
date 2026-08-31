@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controlo de Gastos | Elisama Manuel</title>
+    <meta name="description" content="Controlo de Gastos — aplicação full-stack (FastAPI + SQLite) para registar despesas e receitas pessoais, por Elisama Manuel.">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="marca">
+                <span class="marca-dot"></span>
+                <span>controlo-de-gastos</span>
+            </div>
+            <a href="https://elisamanuel-on.github.io/HTML/" target="_blank" class="link-portfolio">← Portfólio de Elisama Manuel</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h1>Controlo de Gastos</h1>
+            <p class="subtitle">API em FastAPI + SQLite, com testes automáticos e deployment contínuo. <a href="/docs" target="_blank">Ver documentação da API →</a></p>
+            <p class="aviso-demo" id="avisoDemo" hidden>
+                Nota: esta demonstração corre num serviço gratuito — os dados de exemplo repõem-se sempre que o serviço reinicia.
+            </p>
+        </section>
+
+        <section class="resumo-cards" id="resumoCards">
+            <div class="card card-saldo">
+                <span class="card-label">Saldo</span>
+                <span class="card-valor" id="valorSaldo">—</span>
+            </div>
+            <div class="card card-receita">
+                <span class="card-label">Receitas</span>
+                <span class="card-valor" id="valorReceitas">—</span>
+            </div>
+            <div class="card card-despesa">
+                <span class="card-label">Despesas</span>
+                <span class="card-valor" id="valorDespesas">—</span>
+            </div>
+        </section>
+
+        <section class="grid-principal">
+            <div class="painel">
+                <h2>Novo Movimento</h2>
+                <form id="formMovimento">
+                    <div class="campo">
+                        <label for="descricao">Descrição</label>
+                        <input type="text" id="descricao" required maxlength="120" placeholder="Ex: Supermercado">
+                    </div>
+
+                    <div class="campo-linha">
+                        <div class="campo">
+                            <label for="tipo">Tipo</label>
+                            <select id="tipo">
+                                <option value="despesa">Despesa</option>
+                                <option value="receita">Receita</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label for="valor">Valor (€)</label>
+                            <input type="number" id="valor" required min="0.01" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="campo-linha">
+                        <div class="campo">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria"></select>
+                        </div>
+                        <div class="campo">
+                            <label for="data">Data</label>
+                            <input type="date" id="data" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-adicionar">Adicionar</button>
+                    <div id="feedback" class="feedback"></div>
+                </form>
+
+                <h3 class="subtitulo-painel">Despesas por Categoria</h3>
+                <div id="categoriasContainer" class="categorias-lista">
+                    <p class="vazio">Sem despesas ainda.</p>
+                </div>
+            </div>
+
+            <div class="painel">
+                <h2>Movimentos Recentes</h2>
+                <div id="movimentosContainer" class="movimentos-lista">
+                    <p class="vazio">A carregar...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Projeto de portfólio — Elisama Manuel · <a href="https://github.com/elisamanuel-on" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

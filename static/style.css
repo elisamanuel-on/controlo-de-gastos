@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+    --fundo: #0b0f0c;
+    --fundo-painel: #121813;
+    --fundo-input: #0e1410;
+    --borda: #1f2b22;
+    --texto: #e8f3ea;
+    --texto-secundario: #7fa085;
+    --verde: #2ecc55;
+    --verde-forte: #33ff66;
+    --ambar: #ffb000;
+    --vermelho: #ff5f56;
+    --fonte: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: var(--fonte);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+a { color: var(--verde-forte); }
+
+header {
+    border-bottom: 1px solid var(--borda);
+    padding: 16px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--verde-forte);
+}
+
+.marca-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--verde-forte);
+    box-shadow: 0 0 10px var(--verde-forte);
+}
+
+.link-portfolio {
+    font-size: 0.85rem;
+    color: var(--texto-secundario);
+    text-decoration: none;
+}
+.link-portfolio:hover { color: var(--verde-forte); }
+
+main { padding: 32px 24px 64px; }
+
+.intro h1 {
+    font-size: 1.8rem;
+    margin: 0 0 6px;
+    color: var(--verde-forte);
+}
+
+.subtitle {
+    color: var(--texto-secundario);
+    margin: 0 0 8px;
+}
+
+.aviso-demo {
+    font-size: 0.82rem;
+    color: var(--ambar);
+    background: rgba(255, 176, 0, 0.08);
+    border: 1px solid rgba(255, 176, 0, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    max-width: 640px;
+}
+
+.resumo-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 28px 0;
+}
+
+.card {
+    background: var(--fundo-painel);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.card-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--texto-secundario);
+}
+
+.card-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.card-saldo .card-valor { color: var(--verde-forte); }
+.card-receita .card-valor { color: var(--verde); }
+.card-despesa .card-valor { color: var(--vermelho); }
+
+.grid-principal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 800px) {
+    .grid-principal { grid-template-columns: 1fr; }
+}
+
+.painel {
+    background: var(--fundo-painel);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.painel h2 {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    color: var(--verde-forte);
+}
+
+.subtitulo-painel {
+    margin: 24px 0 10px;
+    font-size: 0.95rem;
+    color: var(--texto-secundario);
+}
+
+.campo { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.campo-linha { display: flex; gap: 12px; }
+
+label {
+    font-size: 0.78rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+input, select {
+    background: var(--fundo-input);
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+    color: var(--texto);
+    padding: 9px 10px;
+    font-family: var(--fonte);
+    font-size: 0.92rem;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--verde);
+}
+
+.btn-adicionar {
+    width: 100%;
+    background: var(--verde);
+    color: #06110a;
+    border: none;
+    border-radius: 6px;
+    padding: 11px;
+    font-family: var(--fonte);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.btn-adicionar:hover { background: var(--verde-forte); }
+.btn-adicionar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.feedback {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    min-height: 1.2em;
+}
+.feedback.erro { color: var(--vermelho); }
+.feedback.sucesso { color: var(--verde-forte); }
+
+.movimentos-lista, .categorias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.vazio { color: var(--texto-secundario); font-size: 0.88rem; }
+
+.movimento-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    padding: 10px 12px;
+    gap: 10px;
+}
+
+.movimento-info { display: flex; flex-direction: column; gap: 2px; }
+.movimento-desc { font-weight: 600; font-size: 0.92rem; }
+.movimento-meta { font-size: 0.76rem; color: var(--texto-secundario); }
+
+.movimento-valor { font-weight: 700; white-space: nowrap; }
+.movimento-valor.despesa { color: var(--vermelho); }
+.movimento-valor.receita { color: var(--verde-forte); }
+
+.btn-apagar {
+    background: transparent;
+    border: 1px solid var(--borda);
+    color: var(--texto-secundario);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-family: var(--fonte);
+    line-height: 1;
+    flex-shrink: 0;
+}
+.btn-apagar:hover { border-color: var(--vermelho); color: var(--vermelho); }
+
+.categoria-linha { display: flex; flex-direction: column; gap: 4px; }
+.categoria-topo { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.categoria-barra-fundo {
+    background: var(--fundo-input);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+}
+.categoria-barra {
+    height: 100%;
+    background: var(--ambar);
+    border-radius: 4px;
+}
+
+footer {
+    border-top: 1px solid var(--borda);
+    padding: 18px 0;
+    text-align: center;
+    color: var(--texto-secundario);
+    font-size: 0.82rem;
+}
