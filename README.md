@@ -2,8 +2,8 @@
 
 Aplicação full-stack para registar despesas e receitas pessoais, com resumo automático de saldo e distribuição de gastos por categoria.
 
-**Demo ao vivo:** _(a preencher depois do deploy — ver instruções mais abaixo)_
-**Documentação da API:** `/docs` (gerada automaticamente pelo FastAPI, via Swagger UI)
+**Demo ao vivo:** https://controlo-de-gastos.onrender.com
+**Documentação da API:** https://controlo-de-gastos.onrender.com/docs (gerada automaticamente pelo FastAPI, via Swagger UI)
 
 ## Stack técnica
 
