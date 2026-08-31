@@ -21,12 +21,30 @@ def obter_utilizador_por_id(db: Session, utilizador_id: int) -> Optional[models.
     return db.query(models.Utilizador).filter(models.Utilizador.id == utilizador_id).first()
 
 
-def criar_utilizador(db: Session, nome: str, email: str, senha_hash: str) -> models.Utilizador:
-    utilizador = models.Utilizador(nome=nome, email=email, senha_hash=senha_hash)
+def criar_utilizador(
+    db: Session, nome: str, email: str, senha_hash: str, codigo_recuperacao_hash: str
+) -> models.Utilizador:
+    utilizador = models.Utilizador(
+        nome=nome,
+        email=email,
+        senha_hash=senha_hash,
+        codigo_recuperacao_hash=codigo_recuperacao_hash,
+    )
     db.add(utilizador)
     db.commit()
     db.refresh(utilizador)
     return utilizador
+
+
+def atualizar_password_e_codigo(
+    db: Session, utilizador: models.Utilizador, nova_senha_hash: str, novo_codigo_hash: str
+) -> None:
+    """Repõe a palavra-passe e gera um novo código de recuperação (o antigo
+    deixa de funcionar — é de utilização única)."""
+    utilizador.senha_hash = nova_senha_hash
+    utilizador.codigo_recuperacao_hash = novo_codigo_hash
+    db.add(utilizador)
+    db.commit()
 
 
 def listar_movimentos(

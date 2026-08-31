@@ -68,3 +68,20 @@ class UtilizadorSaida(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class RegistoSaida(Token):
+    codigo_recuperacao: str
+
+
+class RecuperarSenha(BaseModel):
+    email: str = Field(..., max_length=150)
+    codigo_recuperacao: str = Field(..., min_length=1, max_length=50)
+    nova_senha: str = Field(..., min_length=6, max_length=100)
+
+    @field_validator("email")
+    @classmethod
+    def validar_email(cls, v: str) -> str:
+        if not EMAIL_REGEX.match(v):
+            raise ValueError("Email inválido")
+        return v.lower().strip()

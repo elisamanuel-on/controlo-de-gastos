@@ -7,6 +7,8 @@ Aplicação full-stack para registar despesas e receitas pessoais, com autentica
 
 Para experimentar sem criar conta, usa o botão **"Experimentar com conta de demonstração"** no ecrã de login (email `demo@controlo-de-gastos.app`, palavra-passe `demo12345`).
 
+Ao criar uma conta, é gerado um **código de recuperação** (ex: `AB12-CD34-EF56`), mostrado uma única vez logo após o registo. Serve para repor a palavra-passe caso a esqueças, sem precisar de email — no ecrã de login, usa o link **"Esqueci-me da palavra-passe"**. Cada código só pode ser usado uma vez: ao repor a palavra-passe com sucesso, é emitido automaticamente um novo código.
+
 ## Stack técnica
 
 - **Backend:** Python + [FastAPI](https://fastapi.tiangolo.com/)
@@ -14,7 +16,7 @@ Para experimentar sem criar conta, usa o botão **"Experimentar com conta de dem
 - **Base de dados:** SQLite, acedida via [SQLAlchemy](https://www.sqlalchemy.org/) (ORM)
 - **Validação de dados:** [Pydantic](https://docs.pydantic.dev/)
 - **Frontend:** HTML + CSS + JavaScript puro, a consumir a API via `fetch`
-- **Testes:** [pytest](https://docs.pytest.org/) + `TestClient` do FastAPI (cobrindo registo, login, isolamento de dados entre utilizadores, validação e CRUD de movimentos)
+- **Testes:** [pytest](https://docs.pytest.org/) + `TestClient` do FastAPI (cobrindo registo, login, recuperação de palavra-passe por código, isolamento de dados entre utilizadores, validação e CRUD de movimentos)
 - **Integração contínua (CI):** GitHub Actions corre os testes automaticamente a cada `push`/pull request
 - **Deployment contínuo (CD):** [Render](https://render.com) faz deploy automático sempre que há um `push` para `main`
 
@@ -39,8 +41,9 @@ pytest -v
 
 | Método | Rota                      | Descrição                                   |
 |--------|---------------------------|----------------------------------------------|
-| POST   | `/api/auth/registar`      | Cria uma conta e devolve um token de acesso   |
+| POST   | `/api/auth/registar`      | Cria uma conta e devolve um token de acesso + código de recuperação |
 | POST   | `/api/auth/login`         | Autentica e devolve um token de acesso        |
+| POST   | `/api/auth/recuperar`     | Repõe a palavra-passe com o código de recuperação (emite um novo código) |
 | GET    | `/api/auth/eu`            | Dados do utilizador autenticado               |
 | GET    | `/api/movimentos`         | Lista movimentos do utilizador autenticado (filtros: `tipo`, `categoria`) |
 | POST   | `/api/movimentos`         | Cria um novo movimento                        |
@@ -49,6 +52,16 @@ pytest -v
 | GET    | `/api/saude`               | Healthcheck                                   |
 
 Todas as rotas de movimentos exigem o cabeçalho `Authorization: Bearer <token>`.
+
+## Recuperação de emergência
+
+Se perderes a palavra-passe **e** o código de recuperação ao mesmo tempo, a aplicação por si só não tem como te deixar entrar — é a troca (trade-off) normal de um sistema de código de recuperação sem email (o mesmo acontece, por exemplo, com códigos de backup de 2FA). Como tens acesso direto à base de dados local, podes repor a tua própria palavra-passe com:
+
+```bash
+python reset_password.py teu-email@example.com
+```
+
+Pede a nova palavra-passe (duas vezes, para confirmar), atualiza-a diretamente no `gastos.db` e mostra-te um novo código de recuperação. Não depende de mais nenhum pacote do projeto, só da biblioteca padrão do Python. Corre-o com o servidor parado, a partir da pasta do projeto.
 
 ## Nota sobre o plano gratuito
 

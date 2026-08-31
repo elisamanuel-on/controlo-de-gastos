@@ -135,6 +135,50 @@ header {
 }
 .btn-demo:hover { border-color: var(--verde); color: var(--verde-forte); }
 
+.link-botao {
+    background: none;
+    border: none;
+    color: var(--verde-forte);
+    font-family: var(--fonte);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+.link-botao:hover { color: var(--verde); }
+
+.auth-link-secundario { text-align: center; margin: 12px 0 0; }
+
+.auth-texto-ajuda {
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+    margin: 0 0 16px;
+}
+
+.auth-codigo-caixa { text-align: center; }
+.auth-codigo-caixa h3 {
+    color: var(--verde-forte);
+    font-size: 1rem;
+    margin: 0 0 8px;
+}
+.auth-codigo-caixa p {
+    color: var(--texto-secundario);
+    font-size: 0.82rem;
+    margin: 0 0 16px;
+}
+.codigo-valor {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--ambar);
+    background: var(--fundo-input);
+    border: 1px dashed var(--borda);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 18px;
+    word-break: break-all;
+}
+
 main { padding: 32px 24px 64px; }
 
 .intro h1 {

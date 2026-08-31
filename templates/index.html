@@ -41,6 +41,7 @@
                     </div>
                     <button type="submit" class="btn-adicionar">Entrar</button>
                     <button type="button" class="btn-demo" id="btnDemo">Experimentar com conta de demonstração</button>
+                    <p class="auth-link-secundario"><button type="button" class="link-botao" id="btnEsqueciSenha">Esqueci-me da palavra-passe</button></p>
                     <div id="feedbackLogin" class="feedback"></div>
                 </form>
 
@@ -60,6 +61,32 @@
                     <button type="submit" class="btn-adicionar">Criar Conta</button>
                     <div id="feedbackRegisto" class="feedback"></div>
                 </form>
+
+                <form id="formRecuperar" class="auth-form" hidden>
+                    <p class="auth-texto-ajuda">Introduz o código de recuperação que guardaste quando criaste a conta.</p>
+                    <div class="campo">
+                        <label for="recuperarEmail">Email</label>
+                        <input type="email" id="recuperarEmail" required>
+                    </div>
+                    <div class="campo">
+                        <label for="recuperarCodigo">Código de recuperação</label>
+                        <input type="text" id="recuperarCodigo" required placeholder="XXXX-XXXX-XXXX">
+                    </div>
+                    <div class="campo">
+                        <label for="recuperarNovaSenha">Nova palavra-passe</label>
+                        <input type="password" id="recuperarNovaSenha" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-adicionar">Repor Palavra-passe</button>
+                    <p class="auth-link-secundario"><button type="button" class="link-botao" id="btnVoltarLogin">← Voltar ao login</button></p>
+                    <div id="feedbackRecuperar" class="feedback"></div>
+                </form>
+
+                <div class="auth-codigo-caixa" id="codigoCaixa" hidden>
+                    <h3>Guarda o teu código de recuperação</h3>
+                    <p>Vais precisar dele se um dia esqueceres a palavra-passe. Não é possível voltar a mostrá-lo depois.</p>
+                    <div class="codigo-valor" id="codigoValor"></div>
+                    <button type="button" class="btn-adicionar" id="btnCodigoContinuar">Já guardei, continuar</button>
+                </div>
             </div>
         </section>
 

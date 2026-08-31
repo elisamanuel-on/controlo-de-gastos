@@ -223,15 +223,49 @@ function configurarAuth() {
     const abas = document.querySelectorAll('.auth-aba');
     const formLogin = document.getElementById('formLogin');
     const formRegisto = document.getElementById('formRegisto');
+    const formRecuperar = document.getElementById('formRecuperar');
+    const codigoCaixa = document.getElementById('codigoCaixa');
+    const codigoValor = document.getElementById('codigoValor');
+
+    function mostrarFormulario(alvo) {
+        formLogin.hidden = alvo !== 'login';
+        formRegisto.hidden = alvo !== 'registo';
+        formRecuperar.hidden = alvo !== 'recuperar';
+        codigoCaixa.hidden = true;
+        abas.forEach(a => { a.hidden = alvo === 'recuperar'; });
+    }
+
+    function mostrarCodigo(codigo) {
+        formLogin.hidden = true;
+        formRegisto.hidden = true;
+        formRecuperar.hidden = true;
+        abas.forEach(a => { a.hidden = true; });
+        codigoValor.textContent = codigo;
+        codigoCaixa.hidden = false;
+    }
 
     abas.forEach(aba => {
         aba.addEventListener('click', () => {
             abas.forEach(a => a.classList.remove('ativa'));
             aba.classList.add('ativa');
-            const alvo = aba.dataset.aba;
-            formLogin.hidden = alvo !== 'login';
-            formRegisto.hidden = alvo !== 'registo';
+            mostrarFormulario(aba.dataset.aba);
         });
+    });
+
+    document.getElementById('btnEsqueciSenha').addEventListener('click', () => {
+        mostrarFormulario('recuperar');
+    });
+
+    document.getElementById('btnVoltarLogin').addEventListener('click', () => {
+        abas.forEach(a => a.classList.remove('ativa'));
+        document.querySelector('.auth-aba[data-aba="login"]').classList.add('ativa');
+        mostrarFormulario('login');
+    });
+
+    document.getElementById('btnCodigoContinuar').addEventListener('click', async () => {
+        abas.forEach(a => { a.hidden = false; });
+        codigoCaixa.hidden = true;
+        await verificarSessao();
     });
 
     formLogin.addEventListener('submit', async (e) => {
@@ -287,7 +321,38 @@ function configurarAuth() {
             const dados = await resposta.json();
             guardarToken(dados.access_token);
             formRegisto.reset();
-            await verificarSessao();
+            mostrarCodigo(dados.codigo_recuperacao);
+        } catch (err) {
+            feedback.className = 'feedback erro';
+            feedback.textContent = err.message;
+        }
+    });
+
+    formRecuperar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const feedback = document.getElementById('feedbackRecuperar');
+        feedback.textContent = '';
+
+        const payload = {
+            email: document.getElementById('recuperarEmail').value.trim(),
+            codigo_recuperacao: document.getElementById('recuperarCodigo').value.trim(),
+            nova_senha: document.getElementById('recuperarNovaSenha').value,
+        };
+
+        try {
+            const resposta = await fetch('/api/auth/recuperar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (!resposta.ok) {
+                const erro = await resposta.json().catch(() => ({}));
+                throw new Error(erro.detail || 'Não foi possível repor a palavra-passe');
+            }
+            const dados = await resposta.json();
+            guardarToken(dados.access_token);
+            formRecuperar.reset();
+            mostrarCodigo(dados.codigo_recuperacao);
         } catch (err) {
             feedback.className = 'feedback erro';
             feedback.textContent = err.message;

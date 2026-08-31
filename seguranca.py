@@ -35,6 +35,14 @@ ITERACOES_PBKDF2 = 260_000
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 
+def gerar_codigo_recuperacao() -> str:
+    """Gera um código de recuperação legível, ex: 'AB12-CD34-EF56'.
+    Usa um alfabeto sem 0/O/1/I para evitar confusão ao transcrever à mão."""
+    alfabeto = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    partes = ["".join(secrets.choice(alfabeto) for _ in range(4)) for _ in range(3)]
+    return "-".join(partes)
+
+
 def gerar_hash_senha(senha: str) -> str:
     sal = secrets.token_hex(16)
     hash_bytes = hashlib.pbkdf2_hmac(

@@ -250,3 +250,97 @@ def test_filtro_por_tipo():
     dados = resposta.json()
     assert len(dados) == 1
     assert dados[0]["tipo"] == "receita"
+
+
+# --- Recuperação de palavra-passe por código -------------------------------
+
+def test_registo_devolve_codigo_recuperacao():
+    resposta = client.post("/api/auth/registar", json={
+        "nome": "Carla", "email": "carla@example.com", "senha": "segredo123"
+    })
+    assert resposta.status_code == 201
+    corpo = resposta.json()
+    assert "codigo_recuperacao" in corpo
+    # Formato "XXXX-XXXX-XXXX"
+    assert len(corpo["codigo_recuperacao"]) == 14
+    assert corpo["codigo_recuperacao"].count("-") == 2
+
+
+def test_recuperar_password_com_codigo_correto():
+    registo = client.post("/api/auth/registar", json={
+        "nome": "Duarte", "email": "duarte@example.com", "senha": "senhaAntiga123"
+    })
+    codigo = registo.json()["codigo_recuperacao"]
+
+    resposta = client.post("/api/auth/recuperar", json={
+        "email": "duarte@example.com",
+        "codigo_recuperacao": codigo,
+        "nova_senha": "senhaNova456",
+    })
+    assert resposta.status_code == 200
+    corpo = resposta.json()
+    assert "access_token" in corpo
+    assert "codigo_recuperacao" in corpo
+    # A palavra-passe antiga deixa de funcionar
+    login_antigo = client.post("/api/auth/login", data={
+        "username": "duarte@example.com", "password": "senhaAntiga123"
+    })
+    assert login_antigo.status_code == 401
+    # A nova palavra-passe funciona
+    login_novo = client.post("/api/auth/login", data={
+        "username": "duarte@example.com", "password": "senhaNova456"
+    })
+    assert login_novo.status_code == 200
+
+
+def test_recuperar_password_com_codigo_errado_e_rejeitado():
+    client.post("/api/auth/registar", json={
+        "nome": "Elsa", "email": "elsa@example.com", "senha": "senha123"
+    })
+    resposta = client.post("/api/auth/recuperar", json={
+        "email": "elsa@example.com",
+        "codigo_recuperacao": "ZZZZ-ZZZZ-ZZZZ",
+        "nova_senha": "outraSenha456",
+    })
+    assert resposta.status_code == 400
+
+
+def test_recuperar_password_com_email_inexistente_e_rejeitado():
+    resposta = client.post("/api/auth/recuperar", json={
+        "email": "ninguem-aqui@example.com",
+        "codigo_recuperacao": "AAAA-BBBB-CCCC",
+        "nova_senha": "outraSenha456",
+    })
+    assert resposta.status_code == 400
+
+
+def test_codigo_recuperacao_e_de_utilizacao_unica():
+    registo = client.post("/api/auth/registar", json={
+        "nome": "Fábio", "email": "fabio@example.com", "senha": "senhaInicial123"
+    })
+    codigo_original = registo.json()["codigo_recuperacao"]
+
+    primeira = client.post("/api/auth/recuperar", json={
+        "email": "fabio@example.com",
+        "codigo_recuperacao": codigo_original,
+        "nova_senha": "segundaSenha456",
+    })
+    assert primeira.status_code == 200
+    novo_codigo = primeira.json()["codigo_recuperacao"]
+    assert novo_codigo != codigo_original
+
+    # Reutilizar o código antigo já não funciona
+    segunda = client.post("/api/auth/recuperar", json={
+        "email": "fabio@example.com",
+        "codigo_recuperacao": codigo_original,
+        "nova_senha": "terceiraSenha789",
+    })
+    assert segunda.status_code == 400
+
+    # O novo código, esse sim, funciona
+    terceira = client.post("/api/auth/recuperar", json={
+        "email": "fabio@example.com",
+        "codigo_recuperacao": novo_codigo,
+        "nova_senha": "terceiraSenha789",
+    })
+    assert terceira.status_code == 200

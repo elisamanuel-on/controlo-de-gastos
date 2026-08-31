@@ -23,6 +23,7 @@ class Utilizador(Base):
     nome = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True, index=True)
     senha_hash = Column(String, nullable=False)
+    codigo_recuperacao_hash = Column(String, nullable=True)
     criado_em = Column(DateTime, default=datetime.utcnow)
 
     movimentos = relationship(

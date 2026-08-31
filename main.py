@@ -3,8 +3,9 @@ Controlo de Gastos — API em FastAPI.
 
 Endpoints principais:
   GET    /                    → dashboard (HTML)
-  POST   /api/auth/registar   → cria uma conta e devolve um token de acesso
+  POST   /api/auth/registar   → cria uma conta e devolve um token de acesso + código de recuperação
   POST   /api/auth/login      → autentica e devolve um token de acesso
+  POST   /api/auth/recuperar  → repõe a palavra-passe com o código de recuperação
   GET    /api/auth/eu         → dados do utilizador autenticado
   GET    /api/movimentos      → lista movimentos do utilizador autenticado (filtros: tipo, categoria)
   POST   /api/movimentos      → cria um movimento para o utilizador autenticado
@@ -70,14 +71,38 @@ def pagina_inicial(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
 
 
-@app.post("/api/auth/registar", response_model=schemas.Token, status_code=201)
+@app.post("/api/auth/registar", response_model=schemas.RegistoSaida, status_code=201)
 def registar(dados: schemas.UtilizadorCriar, db: Session = Depends(get_db)):
     if crud.obter_utilizador_por_email(db, dados.email):
         raise HTTPException(status_code=400, detail="Já existe uma conta com este email")
     senha_hash = seguranca.gerar_hash_senha(dados.senha)
-    utilizador = crud.criar_utilizador(db, dados.nome, dados.email, senha_hash)
+    codigo_recuperacao = seguranca.gerar_codigo_recuperacao()
+    codigo_hash = seguranca.gerar_hash_senha(codigo_recuperacao)
+    utilizador = crud.criar_utilizador(db, dados.nome, dados.email, senha_hash, codigo_hash)
     token = seguranca.criar_token_acesso({"sub": str(utilizador.id)})
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "codigo_recuperacao": codigo_recuperacao}
+
+
+@app.post("/api/auth/recuperar", response_model=schemas.RegistoSaida)
+def recuperar_password(dados: schemas.RecuperarSenha, db: Session = Depends(get_db)):
+    utilizador = crud.obter_utilizador_por_email(db, dados.email)
+    codigo_valido = (
+        utilizador
+        and utilizador.codigo_recuperacao_hash
+        and seguranca.verificar_senha(dados.codigo_recuperacao, utilizador.codigo_recuperacao_hash)
+    )
+    if not codigo_valido:
+        raise HTTPException(status_code=400, detail="Email ou código de recuperação incorretos")
+
+    novo_codigo = seguranca.gerar_codigo_recuperacao()
+    crud.atualizar_password_e_codigo(
+        db,
+        utilizador,
+        seguranca.gerar_hash_senha(dados.nova_senha),
+        seguranca.gerar_hash_senha(novo_codigo),
+    )
+    token = seguranca.criar_token_acesso({"sub": str(utilizador.id)})
+    return {"access_token": token, "token_type": "bearer", "codigo_recuperacao": novo_codigo}
 
 
 @app.post("/api/auth/login", response_model=schemas.Token)
