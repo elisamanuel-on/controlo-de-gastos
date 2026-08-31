@@ -14,14 +14,59 @@
                 <span class="marca-dot"></span>
                 <span>controlo-de-gastos</span>
             </div>
-            <a href="https://elisamanuel-on.github.io/HTML/" target="_blank" class="link-portfolio">← Portfólio de Elisama Manuel</a>
+            <div class="header-acoes">
+                <span class="utilizador-atual" id="utilizadorAtual" hidden></span>
+                <button class="btn-sair" id="btnSair" hidden>Sair</button>
+                <a href="https://elisamanuel-on.github.io/HTML/" target="_blank" class="link-portfolio">← Portfólio de Elisama Manuel</a>
+            </div>
         </div>
     </header>
 
     <main class="container">
+        <section class="auth-ecra" id="authEcra">
+            <div class="auth-caixa">
+                <div class="auth-abas">
+                    <button type="button" class="auth-aba ativa" data-aba="login">Entrar</button>
+                    <button type="button" class="auth-aba" data-aba="registo">Criar Conta</button>
+                </div>
+
+                <form id="formLogin" class="auth-form">
+                    <div class="campo">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="campo">
+                        <label for="loginSenha">Palavra-passe</label>
+                        <input type="password" id="loginSenha" required>
+                    </div>
+                    <button type="submit" class="btn-adicionar">Entrar</button>
+                    <button type="button" class="btn-demo" id="btnDemo">Experimentar com conta de demonstração</button>
+                    <div id="feedbackLogin" class="feedback"></div>
+                </form>
+
+                <form id="formRegisto" class="auth-form" hidden>
+                    <div class="campo">
+                        <label for="registoNome">Nome</label>
+                        <input type="text" id="registoNome" required maxlength="100">
+                    </div>
+                    <div class="campo">
+                        <label for="registoEmail">Email</label>
+                        <input type="email" id="registoEmail" required>
+                    </div>
+                    <div class="campo">
+                        <label for="registoSenha">Palavra-passe</label>
+                        <input type="password" id="registoSenha" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-adicionar">Criar Conta</button>
+                    <div id="feedbackRegisto" class="feedback"></div>
+                </form>
+            </div>
+        </section>
+
+        <div id="appConteudo" hidden>
         <section class="intro">
             <h1>Controlo de Gastos</h1>
-            <p class="subtitle">API em FastAPI + SQLite, com testes automáticos e deployment contínuo. <a href="/docs" target="_blank">Ver documentação da API →</a></p>
+            <p class="subtitle">API em FastAPI + SQLite, com autenticação por utilizador, testes automáticos e deployment contínuo. <a href="/docs" target="_blank">Ver documentação da API →</a></p>
             <p class="aviso-demo" id="avisoDemo" hidden>
                 Nota: esta demonstração corre num serviço gratuito — os dados de exemplo repõem-se sempre que o serviço reinicia.
             </p>
@@ -93,6 +138,7 @@
                 </div>
             </div>
         </section>
+        </div>
     </main>
 
     <footer>
